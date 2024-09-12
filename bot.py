@@ -13,6 +13,7 @@ from aiohttp import web
 from plugins import web_server, check_expired_premium
 import time
 
+
 class Bot(Client):
     def __init__(self):
         super().__init__(
@@ -67,27 +68,17 @@ class Bot(Client):
         offset: int = 0,
     ) -> Optional[AsyncGenerator["types.Message", None]]:
         """Iterate through a chat sequentially.
-        This convenience method does the same as repeatedly calling :meth:`~pyrogram.Client.get_messages` in a loop, thus saving
-        you from the hassle of setting up boilerplate code. It is useful for getting the whole chat messages with a
-        single call.
-
-        Parameters:
-            chat_id (``int`` | ``str``): Unique identifier (int) or username (str) of the target chat.
-            limit (``int``): Identifier of the last message to be returned.
-            offset (``int``, *optional*): Identifier of the first message to be returned. Defaults to 0.
-
-        Returns:
-            ``Generator``: A generator yielding :obj:`~pyrogram.types.Message` objects.
         """
         current = offset
         while True:
             new_diff = min(200, limit - current)
             if new_diff <= 0:
                 return
-            messages = await self.get_messages(chat_id, list(range(current, current + new_diff + 1)))
+            messages = await self.get_messages(chat_id, list(range(current, current+new_diff+1)))
             for message in messages:
                 yield message
                 current += 1
+
 
 app = Bot()
 app.run()
